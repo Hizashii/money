@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-// @ts-expect-error - pdf-parse has no types
-import pdf from "pdf-parse";
+import { extractText } from "unpdf";
 import { extractInvoice, type InvoiceRow } from "@/lib/extract";
 
 export async function POST(request: NextRequest) {
@@ -19,13 +18,14 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      const buffer = Buffer.from(await file.arrayBuffer());
+      const buffer = await file.arrayBuffer();
       let text = "";
 
       try {
-        const data = await pdf(buffer);
-        text = data.text || "";
-      } catch {
+        const { text: extractedText } = await extractText(buffer);
+        text = Array.isArray(extractedText) ? extractedText.join("\n") : (extractedText || "");
+      } catch (e) {
+        console.error("PDF parse error:", e);
         text = "";
       }
 
