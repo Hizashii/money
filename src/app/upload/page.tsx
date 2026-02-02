@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { extractPdfs, type InvoiceRow } from "@/lib/api";
+import { extractPdfs, downloadExcel, type InvoiceRow } from "@/lib/api";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
 
@@ -38,8 +38,8 @@ export default function UploadPage() {
       const rows = await extractPdfs([file]);
       setData(rows);
       setTimeout(() => setStage("results"), 1200);
-    } catch {
-      setError("Backend not running? Start: cd backend && py -m uvicorn main:app --reload");
+    } catch (err) {
+      setError("Failed to process PDF. Please try again.");
       setStage("upload");
     }
   };
@@ -57,8 +57,12 @@ export default function UploadPage() {
   const totalVat = vats.reduce((a, b) => a + b, 0);
   const netAmount = grandTotal - totalVat;
 
-  const downloadExcel = () => {
-    window.open("http://localhost:8000/api/invoices/excel", "_blank");
+  const handleExportExcel = async () => {
+    try {
+      await downloadExcel(data);
+    } catch {
+      setError("Failed to export Excel. Please try again.");
+    }
   };
 
   return (
@@ -202,7 +206,7 @@ export default function UploadPage() {
                 Upload Another
               </button>
               <button
-                onClick={downloadExcel}
+                onClick={handleExportExcel}
                 className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
