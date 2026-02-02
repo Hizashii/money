@@ -1,0 +1,110 @@
+.sidenav {
+  width: 240px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #eef2f6;
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+.sidenav__inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidenav__title {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #98a2b3;
+  padding: 6px 10px;
+}
+
+.sidenav__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidenav__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 999px; /* pill */
+  text-decoration: none;
+
+  color: #344054;
+  background: transparent;
+
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.sidenav__link:hover {
+  background: #f2f4f7;
+}
+
+.sidenav__link:active {
+  transform: translateY(1px);
+}
+
+.sidenav__link.is-active {
+  background: #eaf3ff; /* light blue pill */
+  color: #175cd3;
+}
+
+.sidenav__left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.sidenav__icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #f2f4f7;
+  flex: 0 0 auto;
+}
+
+.sidenav__link.is-active .sidenav__icon {
+  background: #d8ebff;
+}
+
+.sidenav__icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  opacity: 0.9;
+}
+
+.sidenav__label {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidenav__chev {
+  color: #98a2b3;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.sidenav__link.is-active .sidenav__chev {
+  color: #175cd3;
+}
