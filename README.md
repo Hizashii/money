@@ -1,21 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Money — Invoice to Spreadsheet (AI Extraction)
 
-## Getting Started
+A lightweight dashboard that lets you upload PDF invoices, extracts key fields (vendor, date, total, VAT), displays them in a structured table, and exports everything to an Excel file.
 
-First, run the development server:
+- **Frontend:** Next.js (App Router) + Tailwind
+- **Backend:** FastAPI (PDF text extraction + simple parsing) + Excel export (openpyxl)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+> Note: Current extraction uses PDF text extraction (`pdfplumber`). Scanned/image-only invoices may return empty fields until OCR is added.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Upload one or multiple `.pdf` invoices
+- Extract invoice fields:
+  - Vendor
+  - Date
+  - Total
+  - VAT / Tax
+- View extracted invoices in a dashboard table
+- Export extracted data as **Excel (.xlsx)**
+
+---
+
+## Project Structure (typical)
+
