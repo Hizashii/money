@@ -2,17 +2,17 @@ import Link from "next/link";
 
 export default function SettingsPage() {
   return (
-    <div className="flex-1 p-6 overflow-auto">
+    <div className="flex-1 p-4 sm:p-6 overflow-auto">
       <div className="max-w-2xl">
-        <h1 className="text-xl font-semibold text-slate-900">Settings</h1>
+        <h1 className="text-lg sm:text-xl font-semibold text-slate-900">Settings</h1>
         <p className="mt-1 text-sm text-slate-500">
           App preferences and legal information.
         </p>
 
         {/* About */}
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">About</h2>
-          <div className="mt-3 rounded-xl border border-slate-200 bg-white p-4">
+          <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
             <p className="font-medium text-slate-900">Money</p>
             <p className="mt-1 text-sm text-slate-500">
               Invoice PDF extraction and legitimacy review tool. Upload invoices, extract data, check for issues, and export to Excel or CSV.
@@ -24,14 +24,14 @@ export default function SettingsPage() {
         </div>
 
         {/* Legal */}
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">Legal</h2>
           <div className="mt-3 space-y-2">
             <Link
               href="/privacy"
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 hover:bg-slate-50 transition"
+              className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:p-4 hover:border-slate-300 hover:bg-slate-50 transition"
             >
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium text-slate-900">Privacy Policy</p>
                 <p className="text-sm text-slate-500">How we handle your data</p>
               </div>
@@ -41,9 +41,9 @@ export default function SettingsPage() {
             </Link>
             <Link
               href="/terms"
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 hover:bg-slate-50 transition"
+              className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:p-4 hover:border-slate-300 hover:bg-slate-50 transition"
             >
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium text-slate-900">Terms of Use</p>
                 <p className="text-sm text-slate-500">Service terms and conditions</p>
               </div>

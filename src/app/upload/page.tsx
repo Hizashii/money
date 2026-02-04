@@ -229,11 +229,11 @@ export default function UploadPage() {
     <div className="flex flex-1 flex-col min-h-0">
       {/* UPLOAD / PROCESSING STAGES */}
       {!isResults && (
-        <div className="flex-1 bg-slate-50 p-6 overflow-auto">
+        <div className="flex-1 bg-slate-50 p-4 sm:p-6 overflow-auto">
           <div className="max-w-xl mx-auto">
             {stage === "upload" && (
               <div className="animate-fade-in">
-                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
                   <div className="text-center mb-6">
                     <div className="mx-auto w-12 h-12 rounded-xl bg-slate-100 grid place-items-center mb-3">
                       <svg className="w-6 h-6 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -320,25 +320,25 @@ export default function UploadPage() {
           {/* LEFT: Table + PDF */}
           <div className="min-w-0 min-h-0 flex flex-col bg-slate-50">
             {/* Page header */}
-            <header className="shrink-0 px-6 py-4 bg-white border-b border-slate-200">
-              <div className="flex flex-wrap items-center justify-between gap-4">
+            <header className="shrink-0 px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-slate-200">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <div>
-                  <h1 className="text-lg font-semibold text-slate-900">Invoices</h1>
-                  <p className="text-sm text-slate-500">
+                  <h1 className="text-base sm:text-lg font-semibold text-slate-900">Invoices</h1>
+                  <p className="text-xs sm:text-sm text-slate-500">
                     {extractions.length} invoice{extractions.length !== 1 ? "s" : ""} extracted
                     {needsReviewTotal > 0 && (
                       <span className="text-amber-600 ml-1">· {needsReviewTotal} need{needsReviewTotal === 1 ? "s" : ""} review</span>
                     )}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={reset} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+                <div className="flex flex-wrap items-center gap-2">
+                  <button onClick={reset} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
                     Upload more
                   </button>
-                  <button onClick={handleExportCsv} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+                  <button onClick={handleExportCsv} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
                     Export CSV
                   </button>
-                  <button onClick={handleExportExcel} className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition">
+                  <button onClick={handleExportExcel} className="rounded-lg bg-emerald-600 px-3 py-2 text-xs sm:text-sm font-medium text-white hover:bg-emerald-700 transition">
                     Export Excel
                   </button>
                 </div>
@@ -346,33 +346,35 @@ export default function UploadPage() {
             </header>
 
             {/* Filters row - status chips only */}
-            <div className="shrink-0 px-6 py-3 bg-white border-b border-slate-200 flex items-center gap-2">
-              <FilterChip label="All" count={counts.all} active={statusFilter === "all"} onClick={() => setStatusFilter("all")} />
-              <FilterChip label="Needs review" count={counts.review} active={statusFilter === "review"} onClick={() => setStatusFilter("review")} />
-              <FilterChip label="High risk" count={counts.highRisk} active={statusFilter === "high-risk"} onClick={() => setStatusFilter("high-risk")} />
-              <FilterChip label="OK" count={counts.ok} active={statusFilter === "ok"} onClick={() => setStatusFilter("ok")} />
+            <div className="shrink-0 px-4 sm:px-6 py-3 bg-white border-b border-slate-200 overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-2 min-w-max sm:min-w-0">
+                <FilterChip label="All" count={counts.all} active={statusFilter === "all"} onClick={() => setStatusFilter("all")} />
+                <FilterChip label="Needs review" count={counts.review} active={statusFilter === "review"} onClick={() => setStatusFilter("review")} />
+                <FilterChip label="High risk" count={counts.highRisk} active={statusFilter === "high-risk"} onClick={() => setStatusFilter("high-risk")} />
+                <FilterChip label="OK" count={counts.ok} active={statusFilter === "ok"} onClick={() => setStatusFilter("ok")} />
+              </div>
             </div>
 
             {/* Table */}
-            <div className="flex-1 min-h-0 overflow-auto scrollbar-hide p-6">
-              <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-auto scrollbar-hide p-4 sm:p-6">
+              <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-x-auto scrollbar-hide">
                 {filteredExtractions.length === 0 ? (
-                  <div className="p-8 text-center">
+                  <div className="p-6 sm:p-8 text-center">
                     <p className="text-sm text-slate-500">No invoices match your filters.</p>
                     <button type="button" onClick={() => setStatusFilter("all")} className="mt-2 text-sm text-slate-900 font-medium underline hover:no-underline">
                       Clear filters
                     </button>
                   </div>
                 ) : (
-                  <table className="w-full text-left text-sm">
+                  <table className="w-full text-left text-sm min-w-[600px]">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50">
-                        <th className="px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Vendor</th>
-                        <th className="px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Invoice #</th>
-                        <th className="px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Date</th>
-                        <th className="px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide text-right">Total</th>
-                        <th className="px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide text-right">VAT</th>
-                        <th className="px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Vendor</th>
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Invoice #</th>
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Date</th>
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-xs font-medium text-slate-500 uppercase tracking-wide text-right">Total</th>
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-xs font-medium text-slate-500 uppercase tracking-wide text-right">VAT</th>
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -390,12 +392,12 @@ export default function UploadPage() {
                               isSelected ? "bg-slate-100" : "hover:bg-slate-50"
                             }`}
                           >
-                            <td className="px-4 py-3 font-medium text-slate-900">{inv.sender.companyName}</td>
-                            <td className="px-4 py-3 text-slate-600">{inv.invoiceDetails.invoiceNumber}</td>
-                            <td className="px-4 py-3 text-slate-600">{inv.invoiceDetails.invoiceDate}</td>
-                            <td className="px-4 py-3 text-slate-900 text-right tabular-nums">{inv.amounts.total} {inv.amounts.currency}</td>
-                            <td className="px-4 py-3 text-slate-600 text-right tabular-nums">{inv.amounts.vatTaxAmount}</td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 font-medium text-slate-900 max-w-[120px] sm:max-w-none truncate" title={inv.sender.companyName}>{inv.sender.companyName}</td>
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 text-slate-600 whitespace-nowrap">{inv.invoiceDetails.invoiceNumber}</td>
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 text-slate-600 whitespace-nowrap">{inv.invoiceDetails.invoiceDate}</td>
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 text-slate-900 text-right tabular-nums whitespace-nowrap">{inv.amounts.total} {inv.amounts.currency}</td>
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 text-slate-600 text-right tabular-nums whitespace-nowrap">{inv.amounts.vatTaxAmount}</td>
+                            <td className="px-3 sm:px-4 py-2 sm:py-3">
                               <StatusBadge status={inv.legitimacy.legitimacyStatus} />
                             </td>
                           </tr>
@@ -421,21 +423,21 @@ export default function UploadPage() {
                   </button>
                   {insightsOpen && (
                     <div className="px-4 pb-4 pt-2 border-t border-slate-200">
-                      <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                         <div>
                           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Grand total</p>
-                          <p className="text-lg font-semibold text-slate-900 mt-1">{formatMoney(grandTotal)}</p>
+                          <p className="text-base sm:text-lg font-semibold text-slate-900 mt-1">{formatMoney(grandTotal)}</p>
                         </div>
                         <div>
                           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Total VAT</p>
-                          <p className="text-lg font-semibold text-slate-900 mt-1">{formatMoney(totalVat)}</p>
+                          <p className="text-base sm:text-lg font-semibold text-slate-900 mt-1">{formatMoney(totalVat)}</p>
                         </div>
                         <div>
                           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Net amount</p>
-                          <p className="text-lg font-semibold text-emerald-600 mt-1">{formatMoney(netAmount)}</p>
+                          <p className="text-base sm:text-lg font-semibold text-emerald-600 mt-1">{formatMoney(netAmount)}</p>
                         </div>
                       </div>
-                      <div className="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                      <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 min-h-[200px]">
                         <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Net vs VAT</p>
                         <PieChart
                           series={[
@@ -460,19 +462,19 @@ export default function UploadPage() {
 
               {/* PDF Preview - centered under the table */}
               {pdfUrls.length > 0 && (
-                <div className="mt-8 flex flex-col items-center">
+                <div className="mt-6 sm:mt-8 flex flex-col items-center w-full">
                   <div className="w-full max-w-4xl">
                     <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                       <iframe
                         src={pdfUrls[selectedId !== null ? selectedId : 0]}
-                        className="w-full h-[700px]"
+                        className="w-full h-[min(70vh,500px)] sm:h-[500px] md:h-[600px] lg:h-[700px]"
                         title="Invoice PDF preview"
                       />
                     </div>
-                    <div className="mt-6 flex justify-center">
+                    <div className="mt-4 sm:mt-6 flex justify-center">
                       <button
                         onClick={reset}
-                        className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition"
+                        className="rounded-xl bg-slate-900 px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-semibold text-white hover:bg-slate-800 transition w-full sm:w-auto"
                       >
                         Upload more invoices
                       </button>

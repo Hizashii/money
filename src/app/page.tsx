@@ -2,18 +2,18 @@ import Link from "next/link";
 
 export default function DashboardPage() {
   return (
-    <div className="flex-1 p-6 overflow-auto">
+    <div className="flex-1 p-4 sm:p-6 overflow-auto">
       <div className="max-w-4xl">
-        <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
+        <h1 className="text-lg sm:text-xl font-semibold text-slate-900">Dashboard</h1>
         <p className="mt-1 text-sm text-slate-500">
           Welcome to Money - your invoice extraction and review tool.
         </p>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 sm:mt-6 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {/* Quick action: Upload */}
           <Link
             href="/upload"
-            className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 hover:shadow transition"
+            className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm hover:border-slate-300 hover:shadow transition"
           >
             <div className="w-10 h-10 rounded-lg bg-slate-100 grid place-items-center mb-3 group-hover:bg-slate-200 transition">
               <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -29,7 +29,7 @@ export default function DashboardPage() {
           {/* Quick action: Exports */}
           <Link
             href="/exports"
-            className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 hover:shadow transition"
+            className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm hover:border-slate-300 hover:shadow transition"
           >
             <div className="w-10 h-10 rounded-lg bg-slate-100 grid place-items-center mb-3 group-hover:bg-slate-200 transition">
               <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -45,7 +45,7 @@ export default function DashboardPage() {
           {/* Quick action: Settings */}
           <Link
             href="/settings"
-            className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 hover:shadow transition"
+            className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm hover:border-slate-300 hover:shadow transition"
           >
             <div className="w-10 h-10 rounded-lg bg-slate-100 grid place-items-center mb-3 group-hover:bg-slate-200 transition">
               <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -61,9 +61,9 @@ export default function DashboardPage() {
         </div>
 
         {/* How it works */}
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">How it works</h2>
-          <div className="mt-4 space-y-3">
+          <div className="mt-3 sm:mt-4 space-y-3">
             <div className="flex items-start gap-3">
               <span className="shrink-0 w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-medium grid place-items-center">1</span>
               <div>
