@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Money — Invoice PDF to Spreadsheet",
+  title: "Money -Invoice PDF to Spreadsheet",
   description: "Upload invoice PDFs, extract data, export to spreadsheet.",
 };
 
