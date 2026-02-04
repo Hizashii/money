@@ -83,7 +83,7 @@ export function downloadCsv(
   extractions?: InvoiceExtraction[]
 ): void {
   const name = filename || exportFilename("csv");
-  const escape = (s: string) => `"${String(s).replace(/"/g, '""')}"`;
+  const escape = (s: string | number) => `"${String(s).replace(/"/g, '""')}"`;
 
   if (extractions && extractions.length > 0) {
     const headers = [
