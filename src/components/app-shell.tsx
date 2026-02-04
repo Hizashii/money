@@ -1,17 +1,15 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/nav";
-import Footer from "@/components/footer";
+import AppSidenav from "@/components/app-sidenav";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
-      <Navbar />
-      <main className="flex-1 flex flex-col min-h-0">
+    <div className="h-screen flex bg-slate-50">
+      <AppSidenav />
+      <main className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
         {children}
       </main>
-      <Footer />
     </div>
   );
 }
