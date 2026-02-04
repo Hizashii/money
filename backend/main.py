@@ -13,7 +13,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from extract import InvoiceRow, extract_invoice
 
-app = FastAPI(title="Money API", version="0.1.0")
+app = FastAPI(title="Incheck API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,

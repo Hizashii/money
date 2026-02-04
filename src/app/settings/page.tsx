@@ -13,7 +13,7 @@ export default function SettingsPage() {
         <div className="mt-4 sm:mt-6">
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">About</h2>
           <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
-            <p className="font-medium text-slate-900">Money</p>
+            <p className="font-medium text-slate-900">Incheck</p>
             <p className="mt-1 text-sm text-slate-500">
               Invoice PDF extraction and legitimacy review tool. Upload invoices, extract data, check for issues, and export to Excel or CSV.
             </p>

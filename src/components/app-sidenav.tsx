@@ -96,7 +96,7 @@ export default function AppSidenav() {
       {/* Mobile: top bar with hamburger */}
       <div className="lg:hidden shrink-0 h-14 px-4 flex items-center justify-between border-b border-slate-200 bg-white">
         <Link href="/" className="font-bold text-slate-900 tracking-tight text-lg hover:text-slate-700 transition">
-          MONEY
+        Incheck
         </Link>
         <button
           type="button"
@@ -152,7 +152,7 @@ export default function AppSidenav() {
       <aside className="hidden lg:flex w-56 shrink-0 flex-col border-r border-slate-200 bg-white">
         <div className="h-14 px-4 flex items-center border-b border-slate-200">
           <Link href="/" className="font-bold text-slate-900 tracking-tight text-lg hover:text-slate-700 transition">
-            MONEY
+          Incheck
           </Link>
         </div>
         <nav className="flex-1 p-3 overflow-auto" aria-label="App navigation">

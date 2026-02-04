@@ -6,7 +6,7 @@ export default function DashboardPage() {
       <div className="max-w-4xl">
         <h1 className="text-lg sm:text-xl font-semibold text-slate-900">Dashboard</h1>
         <p className="mt-1 text-sm text-slate-500">
-          Welcome to Money - your invoice extraction and review tool.
+          Welcome to Incheck - your invoice extraction and review tool.
         </p>
 
         <div className="mt-4 sm:mt-6 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
