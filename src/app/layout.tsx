@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Money — Invoice PDF to Spreadsheet",
-  description: "Upload invoice PDFs, extract data with AI, export to spreadsheet.",
+  description: "Upload invoice PDFs, extract data, export to spreadsheet.",
 };
 
 export default function RootLayout({
@@ -25,9 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AppShell>{children}</AppShell>
       </body>
     </html>

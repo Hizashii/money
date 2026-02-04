@@ -1,20 +1,16 @@
 import React from "react";
+import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <header className="w-full h-16 bg-white border-b border-slate-100 flex items-center">
-      <div className="w-full px-5 flex items-center justify-between">
-        <a
+    <header className="w-full h-14 shrink-0 bg-white border-b border-slate-200/60 flex items-center shadow-sm">
+      <div className="w-full px-6 flex items-center">
+        <Link
           href="/"
-          className="inline-flex items-center gap-2 text-slate-900 hover:opacity-90"
+          className="font-bold text-slate-900 tracking-tight text-lg hover:text-slate-700 transition"
         >
-          <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 grid place-items-center text-sm leading-none">
-            ●
-          </span>
-          <span className="font-extrabold tracking-tight text-[15px]">
-            Money
-          </span>
-        </a>
+          MONEY
+        </Link>
       </div>
     </header>
   );

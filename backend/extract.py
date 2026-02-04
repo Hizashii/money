@@ -1,3 +1,4 @@
+"""Extract invoice fields from PDF text using simple heuristics + regex."""
 import re
 from dataclasses import dataclass
 

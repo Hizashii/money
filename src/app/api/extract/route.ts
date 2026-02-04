@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractText } from "unpdf";
-import { extractInvoice, type InvoiceRow } from "@/lib/extract";
+import { extractFullInvoice, type InvoiceExtraction } from "@/lib/extract";
+import { MAX_FILE_SIZE_BYTES } from "@/lib/constants";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,16 +9,30 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll("files") as File[];
 
     if (!files || files.length === 0) {
-      return NextResponse.json({ error: "No files uploaded" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No files uploaded. Please select at least one PDF." },
+        { status: 400 }
+      );
     }
-
-    const results: InvoiceRow[] = [];
 
     for (const file of files) {
       if (!file.name.toLowerCase().endsWith(".pdf")) {
-        continue;
+        return NextResponse.json(
+          { error: `"${file.name}" is not a PDF. Please upload PDF files only.` },
+          { status: 400 }
+        );
       }
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        return NextResponse.json(
+          { error: `"${file.name}" is too large. Maximum size is 10 MB per file.` },
+          { status: 400 }
+        );
+      }
+    }
 
+    const extractions: InvoiceExtraction[] = [];
+
+    for (const file of files) {
       const buffer = await file.arrayBuffer();
       let text = "";
 
@@ -29,13 +44,29 @@ export async function POST(request: NextRequest) {
         text = "";
       }
 
-      const row = extractInvoice(text, file.name);
-      results.push(row);
+      const extraction = extractFullInvoice(text, file.name);
+      extractions.push(extraction);
     }
 
-    return NextResponse.json(results);
+    const currency = extractions[0]?.amounts.currency ?? "$";
+    const summarySentence =
+      extractions.length === 1
+        ? extractions[0].summarySentence
+        : `${extractions.length} invoices extracted. Review each for legitimacy and totals.`;
+
+    return NextResponse.json({
+      extractions,
+      currency,
+      summarySentence,
+    });
   } catch (error) {
     console.error("Extract error:", error);
-    return NextResponse.json({ error: "Failed to process PDF" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error:
+          "Could not process your PDF. Try a text-based invoice (not a scanned image). If the file is large, try a smaller one.",
+      },
+      { status: 500 }
+    );
   }
 }
