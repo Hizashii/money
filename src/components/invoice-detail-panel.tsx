@@ -81,13 +81,13 @@ export default function InvoiceDetailPanel({ extraction: ex, currency, onClose, 
 
       {/* Tabs */}
       <div className="shrink-0 border-b border-slate-200 bg-slate-50 overflow-x-auto scrollbar-hide">
-        <nav className="flex gap-1 -mb-px px-3 sm:px-4 min-w-max" aria-label="Tabs">
+        <nav className="inline-flex gap-1 px-4 pb-0" aria-label="Tabs" style={{ paddingRight: '2rem' }}>
           {tabs.map(({ id, label }) => (
             <button
               key={id}
               type="button"
               onClick={() => setTab(id)}
-              className={`px-2.5 sm:px-3 py-2.5 text-xs sm:text-sm font-medium border-b-2 transition whitespace-nowrap ${
+              className={`shrink-0 px-2 py-2.5 text-sm font-medium border-b-2 transition whitespace-nowrap ${
                 tab === id
                   ? "border-slate-900 text-slate-900"
                   : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
