@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     // --- Sheet 1: Full extraction (everything like the dashboard) - OPEN FIRST ---
     const hasExtractions = extractions && Array.isArray(extractions) && extractions.length > 0;
     if (hasExtractions) {
-      const fullSheet = workbook.addWorksheet("Invoice data (full)", { first: true });
+      const fullSheet = workbook.addWorksheet("Invoice data (full)");
       const fullHeaders = [
         "#",
         "Filename",
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
       fullSheet.getColumn(26).width = 50;
     } else {
       // Fallback: no full extraction data — still put a useful first sheet (vendor, date, total, VAT)
-      const fallbackSheet = workbook.addWorksheet("Invoice data (full)", { first: true });
+      const fallbackSheet = workbook.addWorksheet("Invoice data (full)");
       const fallbackHeaders = ["#", "Vendor", "Date", "Total", "VAT", "Currency"];
       styleHeaderRow(fallbackSheet.addRow(fallbackHeaders));
       invoices.forEach((inv, i) => {
