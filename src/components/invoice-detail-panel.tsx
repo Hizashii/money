@@ -27,9 +27,10 @@ interface InvoiceDetailPanelProps {
   extraction: InvoiceExtraction;
   currency: string;
   onClose: () => void;
+  showCloseButton?: boolean; // Only show X on mobile overlay
 }
 
-export default function InvoiceDetailPanel({ extraction: ex, currency, onClose }: InvoiceDetailPanelProps) {
+export default function InvoiceDetailPanel({ extraction: ex, currency, onClose, showCloseButton = false }: InvoiceDetailPanelProps) {
   const [tab, setTab] = useState<TabId>("overview");
 
   const tabs: { id: TabId; label: string }[] = [
@@ -54,23 +55,25 @@ export default function InvoiceDetailPanel({ extraction: ex, currency, onClose }
     <aside className="w-full h-full flex flex-col bg-white min-h-0">
       {/* Panel header */}
       <div className="shrink-0 px-5 py-4 border-b border-slate-200 flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="font-semibold text-slate-900 truncate text-lg">{ex.sender.companyName}</p>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-slate-900 text-lg">Statistics</p>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-sm font-medium text-slate-700">{totalDisplay}</span>
             <StatusBadge status={ex.legitimacy.legitimacyStatus} />
           </div>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="shrink-0 p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
-          aria-label="Close panel"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        {showCloseButton && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
+            aria-label="Close panel"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Tabs */}

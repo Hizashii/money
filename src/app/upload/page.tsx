@@ -520,6 +520,7 @@ export default function UploadPage() {
             extraction={extractions[selectedId]}
             currency={currency}
             onClose={() => setSelectedId(null)}
+            showCloseButton
           />
         </div>
       )}
