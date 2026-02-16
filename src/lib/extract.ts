@@ -1,7 +1,28 @@
 /**
  * ENHANCED Invoice Extraction from PDF text
- * Maximum accuracy regex-based extraction with comprehensive patterns
+ * 3-layer: normalization (A) + template (B) + table/line items (C)
+ * Confidence + method per field for "Fix extraction" workflow.
  */
+
+import { normalizePdfText } from "./pdf-normalize";
+import { detectVendorTemplate, type Confidence, type ExtractionMethod } from "./extract-templates";
+import { extractLineItemsFromText, type LineItem } from "./extract-table";
+
+export type { Confidence, ExtractionMethod, LineItem };
+
+export interface FieldMeta {
+  confidence: Confidence;
+  method: ExtractionMethod;
+}
+
+export interface ExtractionMeta {
+  vendorTemplateId: string | null;
+  vendorTemplateName: string | null;
+  /** Per-field confidence and method (for Fix extraction UI). */
+  fieldMeta: Record<string, FieldMeta>;
+  /** Whether Layer A normalization was applied. */
+  normalized: boolean;
+}
 
 export interface SenderIdentity {
   companyName: string;
@@ -68,6 +89,10 @@ export interface InvoiceExtraction {
   payment: PaymentDestination;
   legitimacy: LegitimacyQuality;
   summarySentence: string;
+  /** Line items from table extraction (Layer C). */
+  lineItems?: LineItem[];
+  /** Confidence and method per field; used for Fix extraction. */
+  extractionMeta?: ExtractionMeta;
 }
 
 export interface InvoiceRow {
@@ -891,6 +916,97 @@ export function extractFullInvoice(text: string, filename: string = ""): Invoice
     payment,
     legitimacy,
     summarySentence,
+  };
+}
+
+// ============================================================================
+// 3-LAYER EXTRACTION (normalize → template detect → extract + line items + meta)
+// ============================================================================
+
+function confidenceFor(
+  value: string,
+  templateMatched: boolean,
+  isFromTable: boolean
+): Confidence {
+  if (isFromTable) return value ? "high" : "low";
+  if (templateMatched && value && value !== "—" && value !== "Unknown") return "high";
+  if (value && value !== "—" && value !== "Unknown") return "medium";
+  return "low";
+}
+
+function methodFor(templateMatched: boolean, isFromTable: boolean): ExtractionMethod {
+  if (isFromTable) return "table";
+  return templateMatched ? "template" : "generic";
+}
+
+/**
+ * Full pipeline: normalize PDF text (Layer A), detect vendor (Layer B), extract (existing),
+ * add line items (Layer C), and attach confidence + method per field.
+ */
+export function extractFullInvoiceWithLayers(rawPdfText: string, filename: string = ""): InvoiceExtraction {
+  const { text: normalizedText } = normalizePdfText(rawPdfText, false);
+  const text = normalizedText || rawPdfText;
+  const template = detectVendorTemplate(text);
+  const templateMatched = template !== null;
+
+  const extraction = extractFullInvoice(text, filename);
+
+  const lineItems = extractLineItemsFromText(text);
+
+  const fieldMeta: Record<string, FieldMeta> = {
+    companyName: {
+      confidence: confidenceFor(extraction.sender.companyName, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    companyRegistrationId: {
+      confidence: confidenceFor(extraction.sender.companyRegistrationId, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    invoiceNumber: {
+      confidence: confidenceFor(extraction.invoiceDetails.invoiceNumber, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    invoiceDate: {
+      confidence: confidenceFor(extraction.invoiceDetails.invoiceDate, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    dueDate: {
+      confidence: confidenceFor(extraction.invoiceDetails.dueDate, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    total: {
+      confidence: confidenceFor(extraction.amounts.total, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    subtotal: {
+      confidence: confidenceFor(extraction.amounts.subtotal, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    vatTaxAmount: {
+      confidence: confidenceFor(extraction.amounts.vatTaxAmount, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    ibanOrAccount: {
+      confidence: confidenceFor(extraction.payment.ibanOrAccount, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+    beneficiaryName: {
+      confidence: confidenceFor(extraction.payment.beneficiaryName, templateMatched, false),
+      method: methodFor(templateMatched, false),
+    },
+  };
+
+  const extractionMeta: ExtractionMeta = {
+    vendorTemplateId: template?.id ?? null,
+    vendorTemplateName: template?.name ?? null,
+    fieldMeta,
+    normalized: normalizedText.length > 0 && normalizedText !== rawPdfText,
+  };
+
+  return {
+    ...extraction,
+    lineItems: lineItems.length > 0 ? lineItems : undefined,
+    extractionMeta,
   };
 }
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractText } from "unpdf";
-import { extractFullInvoice, type InvoiceExtraction } from "@/lib/extract";
+import { extractFullInvoiceWithLayers, type InvoiceExtraction } from "@/lib/extract";
 import { MAX_FILE_SIZE_BYTES } from "@/lib/constants";
 
 export async function POST(request: NextRequest) {
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         text = "";
       }
 
-      const extraction = extractFullInvoice(text, file.name);
+      const extraction = extractFullInvoiceWithLayers(text, file.name);
       extractions.push(extraction);
     }
 

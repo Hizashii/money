@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import type { InvoiceExtraction } from "@/lib/extract";
+import type { InvoiceExtraction, Confidence, ExtractionMethod } from "@/lib/extract";
 import type { LegitimacyStatus } from "@/lib/extract";
 
 /* Status pill styling */
@@ -21,16 +21,45 @@ function StatusBadge({ status, size = "sm" }: { status: LegitimacyStatus; size?:
 }
 
 
-type TabId = "overview" | "details" | "payment" | "legitimacy" | "statistics";
+type TabId = "overview" | "details" | "payment" | "legitimacy" | "statistics" | "fix";
+
+/** Field path for Fix extraction (maps to extraction object). */
+export type FixableField =
+  | "companyName"
+  | "companyRegistrationId"
+  | "invoiceNumber"
+  | "invoiceDate"
+  | "dueDate"
+  | "total"
+  | "subtotal"
+  | "vatTaxAmount"
+  | "ibanOrAccount"
+  | "beneficiaryName";
 
 interface InvoiceDetailPanelProps {
   extraction: InvoiceExtraction;
   currency: string;
   onClose: () => void;
-  showCloseButton?: boolean; // Only show X on mobile overlay
+  showCloseButton?: boolean;
+  /** When user corrects a field, call this so parent can update extraction (for export). */
+  onFieldChange?: (field: FixableField, value: string) => void;
 }
 
-export default function InvoiceDetailPanel({ extraction: ex, currency, onClose, showCloseButton = false }: InvoiceDetailPanelProps) {
+const CONFIDENCE_PILL: Record<Confidence, string> = {
+  high: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  medium: "bg-amber-50 text-amber-700 border-amber-200",
+  low: "bg-slate-100 text-slate-600 border-slate-200",
+};
+
+function ConfidenceBadge({ c }: { c: Confidence }) {
+  return (
+    <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-medium border ${CONFIDENCE_PILL[c]}`}>
+      {c}
+    </span>
+  );
+}
+
+export default function InvoiceDetailPanel({ extraction: ex, currency, onClose, showCloseButton = false, onFieldChange }: InvoiceDetailPanelProps) {
   const [tab, setTab] = useState<TabId>("overview");
 
   const tabs: { id: TabId; label: string }[] = [
@@ -39,6 +68,7 @@ export default function InvoiceDetailPanel({ extraction: ex, currency, onClose, 
     { id: "payment", label: "Payment" },
     { id: "legitimacy", label: "Legitimacy" },
     { id: "statistics", label: "Statistics" },
+    { id: "fix", label: "Fix extraction" },
   ];
 
   /* Calculate statistics */
@@ -535,6 +565,71 @@ export default function InvoiceDetailPanel({ extraction: ex, currency, onClose, 
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* FIX EXTRACTION TAB */}
+        {tab === "fix" && (
+          <div className="space-y-5">
+            <div className="rounded-xl bg-slate-50 border border-slate-200 p-4">
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Extraction confidence</p>
+              <p className="text-sm text-slate-700">
+                Correct any wrong or missing values below. Changes apply to this session and will be included when you export.
+              </p>
+              {ex.extractionMeta?.vendorTemplateName && (
+                <p className="text-xs text-slate-500 mt-2">
+                  Detected template: <span className="font-medium">{ex.extractionMeta.vendorTemplateName}</span>
+                </p>
+              )}
+            </div>
+
+            <div className="rounded-xl bg-white border border-slate-200 divide-y divide-slate-100">
+              {(
+                [
+                  { key: "companyName" as const, label: "Company name", value: ex.sender.companyName },
+                  { key: "companyRegistrationId" as const, label: "VAT / Reg. ID", value: ex.sender.companyRegistrationId },
+                  { key: "invoiceNumber" as const, label: "Invoice #", value: ex.invoiceDetails.invoiceNumber },
+                  { key: "invoiceDate" as const, label: "Invoice date", value: ex.invoiceDetails.invoiceDate },
+                  { key: "dueDate" as const, label: "Due date", value: ex.invoiceDetails.dueDate },
+                  { key: "total" as const, label: "Total", value: ex.amounts.total },
+                  { key: "subtotal" as const, label: "Subtotal", value: ex.amounts.subtotal },
+                  { key: "vatTaxAmount" as const, label: "VAT / Tax", value: ex.amounts.vatTaxAmount },
+                  { key: "ibanOrAccount" as const, label: "IBAN / Account", value: ex.payment.ibanOrAccount },
+                  { key: "beneficiaryName" as const, label: "Beneficiary", value: ex.payment.beneficiaryName },
+                ] as const
+              ).map(({ key, label, value }) => {
+                const meta = ex.extractionMeta?.fieldMeta?.[key];
+                return (
+                  <div key={key} className="p-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">{label}</label>
+                      <input
+                        type="text"
+                        defaultValue={value}
+                        onBlur={(e) => {
+                          const v = e.target.value.trim();
+                          if (v !== value && onFieldChange) onFieldChange(key, v || "—");
+                        }}
+                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400"
+                      />
+                    </div>
+                    {meta && (
+                      <div className="flex items-center gap-2 shrink-0">
+                        <ConfidenceBadge c={meta.confidence} />
+                        <span className="text-xs text-slate-400">{meta.method}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {ex.lineItems && ex.lineItems.length > 0 && (
+              <div className="rounded-xl bg-white border border-slate-200 p-4">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Line items (from table extraction)</p>
+                <p className="text-sm text-slate-600">{ex.lineItems.length} line(s) extracted. Edit in a future version.</p>
+              </div>
+            )}
           </div>
         )}
       </div>

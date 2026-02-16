@@ -14,7 +14,7 @@ import { saveExtraction, loadExtraction } from "@/lib/session";
 import { MAX_FILE_SIZE_LABEL } from "@/lib/constants";
 import { PieChart } from "@mui/x-charts/PieChart";
 import type { LegitimacyStatus } from "@/lib/extract";
-import InvoiceDetailPanel from "@/components/invoice-detail-panel";
+import InvoiceDetailPanel, { type FixableField } from "@/components/invoice-detail-panel";
 
 type Stage = "upload" | "processing" | "results";
 type StatusFilter = "all" | "review" | "high-risk" | "ok";
@@ -224,6 +224,52 @@ export default function UploadPage() {
     const idx = extractions.indexOf(extraction);
     setSelectedId(idx >= 0 ? idx : null);
   };
+
+  /* Fix extraction: update one field on the selected extraction (for export). */
+  const handleFieldChange = useCallback(
+    (field: FixableField, value: string) => {
+      if (selectedId === null) return;
+      setExtractions((prev) => {
+        const next = [...prev];
+        const ex = { ...next[selectedId] };
+        switch (field) {
+          case "companyName":
+            ex.sender = { ...ex.sender, companyName: value };
+            break;
+          case "companyRegistrationId":
+            ex.sender = { ...ex.sender, companyRegistrationId: value };
+            break;
+          case "invoiceNumber":
+            ex.invoiceDetails = { ...ex.invoiceDetails, invoiceNumber: value };
+            break;
+          case "invoiceDate":
+            ex.invoiceDetails = { ...ex.invoiceDetails, invoiceDate: value };
+            break;
+          case "dueDate":
+            ex.invoiceDetails = { ...ex.invoiceDetails, dueDate: value };
+            break;
+          case "total":
+            ex.amounts = { ...ex.amounts, total: value };
+            break;
+          case "subtotal":
+            ex.amounts = { ...ex.amounts, subtotal: value };
+            break;
+          case "vatTaxAmount":
+            ex.amounts = { ...ex.amounts, vatTaxAmount: value };
+            break;
+          case "ibanOrAccount":
+            ex.payment = { ...ex.payment, ibanOrAccount: value };
+            break;
+          case "beneficiaryName":
+            ex.payment = { ...ex.payment, beneficiaryName: value };
+            break;
+        }
+        next[selectedId] = ex;
+        return next;
+      });
+    },
+    [selectedId]
+  );
 
   return (
     <div className="flex flex-1 flex-col min-h-0">
@@ -498,6 +544,7 @@ export default function UploadPage() {
                 extraction={extractions[selectedId]}
                 currency={currency}
                 onClose={() => setSelectedId(null)}
+                onFieldChange={handleFieldChange}
               />
             ) : (
               <div className="flex-1 flex items-center justify-center p-6">
@@ -523,6 +570,7 @@ export default function UploadPage() {
             currency={currency}
             onClose={() => setSelectedId(null)}
             showCloseButton
+            onFieldChange={handleFieldChange}
           />
         </div>
       )}
