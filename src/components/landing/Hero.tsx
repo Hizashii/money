@@ -13,7 +13,7 @@ const LBL = "text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 function AppSidebar() {
   const topIcons = [
-    <svg key="d" width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" opacity=".35"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity=".35"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor" opacity=".35"/></svg>,
+    <svg key="d" width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="currentColor" /><rect x="3" y="14" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="currentColor" /></svg>,
     <svg key="f" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M9 12h6M9 8h6M9 16h4M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>,
     <svg key="r" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.6"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>,
     <svg key="l" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>,
@@ -122,7 +122,7 @@ function PaymentCard() {
         {[["Bank transfer",68],["Card",22],["Other",10]].map(([l,p])=>(
           <div key={l as string} style={{ display:"flex", alignItems:"center", gap:8 }}>
             <div style={{ flex:1, height:3, background:"#f1f5f9", borderRadius:99, overflow:"hidden" }}>
-              <div style={{ width:`${p}%`, height:"100%", background:ACCENT, opacity:0.25+(p as number)/130, borderRadius:99 }}/>
+              <div style={{ width:`${p}%`, height:"100%", background:ACCENT, borderRadius:99 }}/>
             </div>
             <span style={{ fontSize:9, color:"#94a3b8", whiteSpace:"nowrap", width:88, textAlign:"right" }}>{l} · {p}%</span>
           </div>
@@ -247,29 +247,28 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
     };
 
     // Float offsets — cards spread outward from the tablet center
+    // Increased distances so cards start further away
     const FLOATS = [
-      { dx:-200, dy:-160 },
-      { dx: 200, dy:-160 },
-      { dx:-200, dy: 120 },
-      { dx: 200, dy: 120 },
+      { dx:-340, dy:-260 },
+      { dx: 340, dy:-260 },
+      { dx:-340, dy: 200 },
+      { dx: 340, dy: 200 },
     ];
 
-    // Set card geometry without affecting x/y
     const placeCards = (progress: number) => {
       const pos = getFinalPos();
       if (!pos) return;
       const scrollTop = window.scrollY;
       const p = Math.min(Math.max(progress, 0), 1);
-      const ease = (t: number) => t < 0.5 ? 2*t*t : -1+(4-2*t)*t; // easeInOut
+      // ease-in-out curve
+      const ease = (t: number) => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
       const ep = ease(p);
 
       cardRefs.forEach((ref, i) => {
         if (!ref.current) return;
         const dx = FLOATS[i].dx * (1 - ep);
         const dy = FLOATS[i].dy * (1 - ep);
-        const sc = 0.94 + 0.06 * ep;
-        const op = 0.75 + 0.25 * ep;
-        const br = 18 - 6 * ep;
+        const sc = 0.97 + 0.03 * ep;
 
         Object.assign(ref.current.style, {
           position:   "fixed",
@@ -278,12 +277,24 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
           height:     pos[i].h + "px",
           left:       (pos[i].l + dx) + "px",
           top:        (pos[i].t - scrollTop + dy) + "px",
-          borderRadius: br + "px",
+          borderRadius: "14px",
           transform:  `scale(${sc})`,
-          opacity:    String(op),
+          // No opacity change — always fully opaque
+          opacity:    "1",
           pointerEvents: "auto",
         });
       });
+    };
+
+    const getScrollProgress = () => {
+      const section = sectionRef.current;
+      if (!section) return 0;
+      const sRect = section.getBoundingClientRect();
+      // Begin as soon as the section top hits the viewport top,
+      // and complete within just 35% of viewport height of scrolling.
+      const scrolled = -sRect.top;
+      const totalRange = window.innerHeight * 0.35;
+      return Math.max(0, Math.min(scrolled / totalRange, 1));
     };
 
     const ctx = gsap.context(() => {
@@ -293,39 +304,29 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
         y: 0, opacity: 1, duration: 1.2, ease: "power3.out", delay: 0.3,
       });
 
-      // Cards driven by scroll progress
+      // Scroll-driven card animation
       const st = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=700",
-        onUpdate: (self) => {
-          placeCards(self.progress);
+        end: "+=400",
+        onUpdate: () => {
+          placeCards(getScrollProgress());
         },
       });
 
-      // Initial state (progress = 0)
+      // Initial state — cards at float positions (progress = 0)
       requestAnimationFrame(() => placeCards(0));
 
       const onScroll = () => {
-        // reposition on every scroll tick (handles scroll within ST range too)
         cancelAnimationFrame(raf);
         raf = requestAnimationFrame(() => {
-          const pos = getFinalPos();
-          if (!pos) return;
-          const scrollTop = window.scrollY;
-          const section = sectionRef.current;
-          if (!section) return;
-          const sRect = section.getBoundingClientRect();
-          const sH    = section.offsetHeight;
-          const triggerEnd = sH - window.innerHeight;
-          const rawProg = Math.max(0, Math.min(-sRect.top / Math.max(triggerEnd, 1), 1));
-          placeCards(rawProg);
+          placeCards(getScrollProgress());
         });
       };
 
       const onResize = () => {
         ScrollTrigger.refresh();
-        placeCards(0);
+        placeCards(getScrollProgress());
       };
 
       window.addEventListener("scroll", onScroll, { passive: true });
@@ -346,8 +347,8 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
     <section
       ref={sectionRef}
       style={{
-        // Tall enough for scroll animation + content below
-        minHeight: "220vh",
+        // Just enough height for the card animation to complete
+        minHeight: "105vh",
         background: "radial-gradient(ellipse 120% 40% at 50% 0%, #eaebf3 0%, #f4f4f8 50%, #fafafa 80%, #fff 100%)",
         position: "relative",
         overflow: "hidden",
@@ -356,8 +357,8 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
       {/* Ambient glow */}
       <div style={{ position:"absolute", top:0, left:"50%", transform:"translateX(-50%)", width:"55vw", height:"40vh", pointerEvents:"none", background:"radial-gradient(ellipse at center, rgba(99,102,241,0.08) 0%, transparent 70%)", filter:"blur(52px)" }}/>
 
-      {/* ── Hero text — pushed well down ── */}
-      <div style={{ display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center", padding:"0 24px", paddingTop:"clamp(120px, 18vh, 200px)" }}>
+      {/* ── Hero text ── */}
+      <div style={{ display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center", padding:"0 24px", paddingTop:"clamp(80px, 12vh, 140px)" }}>
         <motion.div
           initial="initial" animate="animate"
           transition={{ staggerChildren:0.13, delayChildren:0.1 }}
@@ -400,10 +401,10 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
         </motion.div>
       </div>
 
-      {/* ── Tablet — pushed further down ── */}
+      {/* ── Tablet ── */}
       <div
         style={{
-          marginTop:"clamp(80px, 14vh, 160px)",
+          marginTop:"clamp(48px, 8vh, 96px)",
           padding:"0 clamp(12px, 3vw, 40px)",
           position:"relative",
           zIndex:5,
@@ -452,10 +453,10 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
         </div>
       </div>
 
-      {/* Extra scroll room */}
-      <div style={{ height:"60vh" }} aria-hidden />
+      {/* Small spacer so cards have landed before section ends */}
+      <div style={{ height:"8vh" }} aria-hidden />
 
-      {/* ── 4 Cards (GSAP-managed via inline styles above) ── */}
+      {/* ── 4 Cards (GSAP-managed) ── */}
       {([
         <OverviewCard   key="tl" />,
         <PaymentCard    key="tr" />,
@@ -472,8 +473,10 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
             border:"0.5px solid rgba(0,0,0,0.07)",
             boxShadow:"0 2px 8px rgba(0,0,0,0.04), 0 10px 30px rgba(0,0,0,0.09)",
             overflow:"hidden",
-            willChange:"transform, left, top, opacity",
+            willChange:"transform, left, top",
             transformOrigin:"center center",
+            // Always fully visible — no opacity transition
+            opacity:1,
           }}
         >
           {content}

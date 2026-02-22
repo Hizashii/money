@@ -13,7 +13,7 @@ export function ReviewsSection({ sectionRef }: ReviewsSectionProps) {
     <section
       id="reviews"
       ref={sectionRef}
-      className="py-24 sm:py-32 px-4 sm:px-6 bg-white"
+      className="py-10 sm:py-14 px-4 sm:px-6 bg-white mb-[100px]"
     >
       <div className="max-w-6xl mx-auto">
         <AnimatedSection>
@@ -21,7 +21,7 @@ export function ReviewsSection({ sectionRef }: ReviewsSectionProps) {
             What people say
           </h2>
         </AnimatedSection>
-        <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {REVIEWS.map((r) => (
             <AnimatedSection key={`${r.author}-${r.role}`}>
               <motion.div

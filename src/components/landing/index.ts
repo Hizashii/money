@@ -5,6 +5,5 @@ export { ProductSection } from "./ProductSection";
 export { InvoicesSection } from "./InvoicesSection";
 export { HowItWorksSection } from "./HowItWorksSection";
 export { ReviewsSection } from "./ReviewsSection";
-export { CTASection } from "./CTASection";
 export { Footer } from "./Footer";
 export * from "./constants";

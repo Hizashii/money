@@ -9,7 +9,6 @@ import {
   InvoicesSection,
   HowItWorksSection,
   ReviewsSection,
-  CTASection,
   Footer,
 } from "@/components/landing";
 
@@ -29,7 +28,6 @@ export default function LandingPage() {
       <InvoicesSection sectionRef={setSectionRef("invoices")} />
       <HowItWorksSection sectionRef={setSectionRef("how-it-works")} />
       <ReviewsSection sectionRef={setSectionRef("reviews")} />
-      <CTASection />
       <Footer />
     </div>
   );

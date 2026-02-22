@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { AnimatedSection } from "./AnimatedSection";
 import { HOW_IT_WORKS_STEPS } from "./constants";
@@ -13,21 +12,105 @@ export function HowItWorksSection({ sectionRef }: HowItWorksSectionProps) {
     <section
       id="how-it-works"
       ref={sectionRef}
-      className="py-24 sm:py-32 px-4 sm:px-6 bg-[#fafafa]"
+      style={{
+        // Card 3: sticks 64px (2 × CARD_PEEK) from top, highest z-index
+        position: "sticky",
+        top: 64,
+        zIndex: 3,
+        minHeight: "auto",
+        marginBottom: 100,
+        background: "#fafafa",
+        borderRadius: "24px 24px 0 0",
+        boxShadow: "0 -6px 40px rgba(0,0,0,0.13)",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
     >
-      <div className="max-w-6xl mx-auto">
-        <AnimatedSection>
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 text-center">
+      {/* Handle */}
+      <div style={{
+        width: 40,
+        height: 4,
+        borderRadius: 99,
+        background: "rgba(0,0,0,0.1)",
+        margin: "12px auto 0",
+        flexShrink: 0,
+      }} />
+
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* ── Header ── */}
+        <div style={{
+          textAlign: "center",
+          paddingTop: "clamp(20px, 3vw, 40px)",
+          paddingLeft: "clamp(16px, 4vw, 40px)",
+          paddingRight: "clamp(16px, 4vw, 40px)",
+          marginBottom: "clamp(14px, 2vw, 28px)",
+        }}>
+          <span style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.13em",
+            textTransform: "uppercase" as const,
+            color: "#1d4ed8",
+            marginBottom: 18,
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+          }}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M5 1v8M1 5h8" stroke="#1d4ed8" strokeWidth="1.6" strokeLinecap="round"/>
+            </svg>
+            Process
+          </span>
+
+          <h2 style={{
+            fontFamily: "'DM Serif Display', Georgia, serif",
+            fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+            fontWeight: 700,
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            color: "#0a0a14",
+            margin: "0 0 18px",
+          }}>
             How it works
           </h2>
-          <p className="mt-4 text-lg text-slate-500 text-center max-w-2xl mx-auto">
+
+          <p style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: "clamp(15px, 1.8vw, 18px)",
+            color: "#64748b",
+            lineHeight: 1.7,
+            maxWidth: 440,
+            margin: "0 auto",
+          }}>
             Three steps from PDF to spreadsheet.
           </p>
-        </AnimatedSection>
-        <div className="mt-20 grid sm:grid-cols-3 gap-8 lg:gap-12">
+        </div>
+
+        {/* ── Steps ── */}
+        <div style={{
+          flex: 1,
+          maxWidth: 1120,
+          margin: "0 auto",
+          width: "100%",
+          paddingLeft: "clamp(16px, 4vw, 40px)",
+          paddingRight: "clamp(16px, 4vw, 40px)",
+          paddingBottom: "clamp(20px, 3vw, 40px)",
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 16,
+          alignContent: "start",
+        }}>
           {HOW_IT_WORKS_STEPS.map((item, i) => (
             <AnimatedSection key={item.step}>
-              <div className="flex flex-col items-center text-center">
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+              }}>
+                {/* Step number circle */}
                 <motion.div
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
@@ -38,25 +121,68 @@ export function HowItWorksSection({ sectionRef }: HowItWorksSectionProps) {
                     damping: 15,
                     delay: i * 0.1,
                   }}
-                  className="inline-flex w-12 h-12 rounded-full bg-slate-900 text-white text-sm font-bold items-center justify-center mb-6 shrink-0"
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: "50%",
+                    background: "#0f172a",
+                    color: "white",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    fontFamily: "'DM Sans', system-ui, sans-serif",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 24,
+                    flexShrink: 0,
+                  }}
                 >
                   {item.step}
                 </motion.div>
-                <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm flex items-center justify-center">
+
+                {/* Visual placeholder */}
+                <div style={{
+                  width: "100%",
+                  aspectRatio: "4/3",
+                  borderRadius: 16,
+                  border: "0.5px solid rgba(0,0,0,0.08)",
+                  background: "white",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 20,
+                  overflow: "hidden",
+                }}>
                   <motion.div
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    style={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: "50%",
+                      background: "#f1f5f9",
                     }}
-                    className="w-16 h-16 rounded-full bg-slate-100"
                   />
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-slate-900">
+
+                <h3 style={{
+                  fontFamily: "'DM Sans', system-ui, sans-serif",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: "#0f172a",
+                  margin: "0 0 8px",
+                }}>
                   {item.title}
                 </h3>
-                <p className="mt-2 text-slate-500 text-sm leading-relaxed">
+
+                <p style={{
+                  fontFamily: "'DM Sans', system-ui, sans-serif",
+                  fontSize: 13,
+                  color: "#64748b",
+                  lineHeight: 1.7,
+                  margin: 0,
+                }}>
                   {item.desc}
                 </p>
               </div>
@@ -64,6 +190,25 @@ export function HowItWorksSection({ sectionRef }: HowItWorksSectionProps) {
           ))}
         </div>
       </div>
+
+      {/* ── Card number ── */}
+      <div style={{
+        position: "absolute",
+        bottom: 28,
+        left: "clamp(24px, 4vw, 48px)",
+        fontFamily: "'DM Serif Display', Georgia, serif",
+        fontSize: 13,
+        fontWeight: 700,
+        color: "#cbd5e1",
+        letterSpacing: "0.04em",
+        userSelect: "none" as const,
+      }}>
+        03 / 03
+      </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap');
+      `}</style>
     </section>
   );
 }
