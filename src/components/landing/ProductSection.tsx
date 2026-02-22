@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -34,9 +35,20 @@ export function ProductSection({ sectionRef }: ProductSectionProps) {
         }
       );
 
-      // Hover: lift up
-      const onEnter = () => gsap.to(card, { y: -4, duration: 0.2, ease: "power2.out", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" });
-      const onLeave = () => gsap.to(card, { y: 0, duration: 0.3, ease: "power2.out", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" });
+      const onEnter = () =>
+        gsap.to(card, {
+          y: -4,
+          duration: 0.2,
+          ease: "power2.out",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+        });
+      const onLeave = () =>
+        gsap.to(card, {
+          y: 0,
+          duration: 0.3,
+          ease: "power2.out",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+        });
 
       card!.addEventListener("mouseenter", onEnter);
       card!.addEventListener("mouseleave", onLeave);
@@ -54,7 +66,7 @@ export function ProductSection({ sectionRef }: ProductSectionProps) {
     <section
       id="product"
       ref={sectionRef}
-      className="py-24 sm:py-32 px-4 sm:px-6"
+      className="pt-32 sm:pt-40 pb-24 sm:pb-32 px-4 sm:px-6 bg-[#fafafa]"
     >
       <div className="max-w-6xl mx-auto">
         <AnimatedSection>
@@ -72,7 +84,9 @@ export function ProductSection({ sectionRef }: ProductSectionProps) {
           {PRODUCT_FEATURES.map((item, i) => (
             <AnimatedSection key={item.title}>
               <div
-                ref={(el) => { cardsRef.current[i] = el; }}
+                ref={(el) => {
+                  cardsRef.current[i] = el;
+                }}
                 className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm hover:border-slate-200 transition-colors duration-300 flex flex-col items-center text-center"
               >
                 <div
