@@ -213,6 +213,15 @@ function StatisticsCard() {
 interface HeroProps { onScrollToHowItWorks?: () => void }
 const fadeUp = { initial:{opacity:0,y:16}, animate:{opacity:1,y:0} };
 
+// Unique sine-wave parameters per card — different frequencies + phase offsets
+// so each card drifts on its own independent rhythm
+const FLOAT_PARAMS = [
+  { yFreq: 0.00042, rFreq: 0.00028, yAmp: 9,  rAmp: 0.28, phase: 0.00 },
+  { yFreq: 0.00037, rFreq: 0.00031, yAmp: 11, rAmp: 0.22, phase: 1.80 },
+  { yFreq: 0.00051, rFreq: 0.00024, yAmp: 8,  rAmp: 0.32, phase: 3.60 },
+  { yFreq: 0.00044, rFreq: 0.00035, yAmp: 10, rAmp: 0.25, phase: 5.10 },
+];
+
 export function Hero({ onScrollToHowItWorks }: HeroProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const screenRef  = useRef<HTMLDivElement>(null);
@@ -224,11 +233,10 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
   const cardRefs = [c0, c1, c2, c3];
 
   useEffect(() => {
-    let raf = 0;
     const GAP     = 10;
     const SIDEBAR = 54;
 
-    // Final positions inside screen
+    // ── Helpers ───────────────────────────────────────────────────────────────
     const getFinalPos = () => {
       const screen = screenRef.current;
       if (!screen) return null;
@@ -246,108 +254,171 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
       ];
     };
 
-    // Float offsets — cards spread outward from the tablet center
-    // Increased distances so cards start further away
-    const FLOATS = [
+    const FLOAT_OFFSETS = [
       { dx:-340, dy:-260 },
       { dx: 340, dy:-260 },
       { dx:-340, dy: 200 },
       { dx: 340, dy: 200 },
     ];
 
-    const placeCards = (progress: number) => {
-      const pos = getFinalPos();
-      if (!pos) return;
-      const scrollTop = window.scrollY;
-      const p = Math.min(Math.max(progress, 0), 1);
-      // ease-in-out curve
-      const ease = (t: number) => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-      const ep = ease(p);
-
-      cardRefs.forEach((ref, i) => {
-        if (!ref.current) return;
-        const dx = FLOATS[i].dx * (1 - ep);
-        const dy = FLOATS[i].dy * (1 - ep);
-        const sc = 0.97 + 0.03 * ep;
-
-        Object.assign(ref.current.style, {
-          position:   "fixed",
-          zIndex:     "30",
-          width:      pos[i].w + "px",
-          height:     pos[i].h + "px",
-          left:       (pos[i].l + dx) + "px",
-          top:        (pos[i].t - scrollTop + dy) + "px",
-          borderRadius: "14px",
-          transform:  `scale(${sc})`,
-          // No opacity change — always fully opaque
-          opacity:    "1",
-          pointerEvents: "auto",
-        });
-      });
-    };
+    const easeInOut = (t: number) => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
 
     const getScrollProgress = () => {
       const section = sectionRef.current;
       if (!section) return 0;
-      const sRect = section.getBoundingClientRect();
-      // Begin as soon as the section top hits the viewport top,
-      // and complete within just 35% of viewport height of scrolling.
-      const scrolled = -sRect.top;
-      const totalRange = window.innerHeight * 0.35;
-      return Math.max(0, Math.min(scrolled / totalRange, 1));
+      const rect = section.getBoundingClientRect();
+      return Math.max(0, Math.min(-rect.top / (window.innerHeight * 0.35), 1));
     };
 
+    // ── Per-card tilt state (updated by mouse listeners, read by rAF loop) ───
+    const tiltState = cardRefs.map(() => ({
+      rx: 0, ry: 0,       // current (lerped)
+      txRx: 0, txRy: 0,   // target
+      hovered: false,
+    }));
+
+    // ── Single rAF loop: position + float + tilt + shadow ────────────────────
+    let floatRaf = 0;
+    let startTime: number | null = null;
+
+    const loop = (now: number) => {
+      if (startTime === null) startTime = now;
+      const t = now - startTime; // ms elapsed
+
+      const ep  = easeInOut(getScrollProgress()); // 0..1, eased
+      // floatAmp smoothly fades from 1 → 0 as cards land.
+      // We smooth it slightly so it doesn't snap if someone scrolls fast.
+      const floatAmp = 1 - ep;
+
+      const pos       = getFinalPos();
+      const scrollTop = window.scrollY;
+
+      if (pos) {
+        cardRefs.forEach((ref, i) => {
+          if (!ref.current) return;
+
+          // 1. Scroll-driven fly-in offset
+          const dx = FLOAT_OFFSETS[i].dx * (1 - ep);
+          const dy = FLOAT_OFFSETS[i].dy * (1 - ep);
+
+          // 2. Sine-wave float — Y position + slight rotation
+          const p      = FLOAT_PARAMS[i];
+          const floatY = Math.sin(t * p.yFreq + p.phase)           * p.yAmp * floatAmp;
+          const floatR = Math.sin(t * p.rFreq + p.phase + 1.2)     * p.rAmp * floatAmp;
+
+          // 3. Mouse tilt — lerp toward target
+          const ts = tiltState[i];
+          const lf = ts.hovered ? 0.10 : 0.06; // faster when hovering
+          ts.rx += (ts.txRx - ts.rx) * lf;
+          ts.ry += (ts.txRy - ts.ry) * lf;
+
+          // 4. Compose transform (tilt + float rotation)
+          const transform = [
+            `perspective(800px)`,
+            `rotateX(${ts.rx}deg)`,
+            `rotateY(${ts.ry}deg)`,
+            `rotate(${floatR}deg)`,
+          ].join(" ");
+
+          // 5. Dynamic box-shadow — lifts when floating or hovered
+          const lift      = ts.hovered ? 32 : 12 + Math.abs(floatY) * 0.9;
+          const shadowOp  = ts.hovered ? 0.16 : 0.06 + floatAmp * 0.05;
+          const shadowX   = -ts.ry * 0.55;
+          const shadowYOff =  ts.rx * 0.55;
+
+          Object.assign(ref.current.style, {
+            position:        "fixed",
+            zIndex:          "30",
+            width:           pos[i].w + "px",
+            height:          pos[i].h + "px",
+            left:            (pos[i].l + dx) + "px",
+            // floatY is added to top — moves card up/down organically
+            top:             (pos[i].t - scrollTop + dy + floatY) + "px",
+            borderRadius:    "14px",
+            opacity:         "1",
+            pointerEvents:   "auto",
+            willChange:      "transform, left, top",
+            transformOrigin: "center center",
+            transform,
+            boxShadow: `
+              ${shadowX}px ${shadowYOff + lift}px ${lift * 2.2}px rgba(0,0,0,${shadowOp}),
+              0 2px 8px rgba(0,0,0,0.04)
+            `,
+          });
+        });
+      }
+
+      floatRaf = requestAnimationFrame(loop);
+    };
+
+    floatRaf = requestAnimationFrame(loop);
+
+    // ── GSAP: tablet entrance only ────────────────────────────────────────────
     const ctx = gsap.context(() => {
-      // Tablet entrance
       gsap.set(tabletRef.current, { y: 40, opacity: 0 });
       gsap.to(tabletRef.current, {
         y: 0, opacity: 1, duration: 1.2, ease: "power3.out", delay: 0.3,
       });
 
-      // Scroll-driven card animation
-      const st = ScrollTrigger.create({
+      // ScrollTrigger still needed to keep GSAP's scroll system aware
+      ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
         end: "+=400",
-        onUpdate: () => {
-          placeCards(getScrollProgress());
-        },
       });
-
-      // Initial state — cards at float positions (progress = 0)
-      requestAnimationFrame(() => placeCards(0));
-
-      const onScroll = () => {
-        cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(() => {
-          placeCards(getScrollProgress());
-        });
-      };
-
-      const onResize = () => {
-        ScrollTrigger.refresh();
-        placeCards(getScrollProgress());
-      };
-
-      window.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", onResize);
-
-      return () => {
-        window.removeEventListener("scroll", onScroll);
-        window.removeEventListener("resize", onResize);
-        cancelAnimationFrame(raf);
-        st.kill();
-      };
     }, sectionRef);
 
-    return () => ctx.revert();
+    // ── Mouse tilt listeners ──────────────────────────────────────────────────
+    const tiltCleanups: (() => void)[] = [];
+
+    cardRefs.forEach((ref, i) => {
+      const el = ref.current;
+      if (!el) return;
+
+      const onMove = (e: MouseEvent) => {
+        const rect = el.getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        const nx = (e.clientX - cx) / (rect.width  / 2); // -1..1
+        const ny = (e.clientY - cy) / (rect.height / 2);
+        const MAX = 9;
+        tiltState[i].txRx =  ny * MAX;
+        tiltState[i].txRy = -nx * MAX;
+      };
+
+      const onEnter = () => { tiltState[i].hovered = true; };
+      const onLeave = () => {
+        tiltState[i].hovered = false;
+        tiltState[i].txRx = 0;
+        tiltState[i].txRy = 0;
+      };
+
+      el.addEventListener("mousemove",  onMove  as EventListener);
+      el.addEventListener("mouseenter", onEnter as EventListener);
+      el.addEventListener("mouseleave", onLeave as EventListener);
+
+      tiltCleanups.push(() => {
+        el.removeEventListener("mousemove",  onMove  as EventListener);
+        el.removeEventListener("mouseenter", onEnter as EventListener);
+        el.removeEventListener("mouseleave", onLeave as EventListener);
+      });
+    });
+
+    const onResize = () => ScrollTrigger.refresh();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      cancelAnimationFrame(floatRaf);
+      ctx.revert();
+      tiltCleanups.forEach(fn => fn());
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   return (
     <section
       ref={sectionRef}
       style={{
-        // Just enough height for the card animation to complete
         minHeight: "105vh",
         background: "radial-gradient(ellipse 120% 40% at 50% 0%, #eaebf3 0%, #f4f4f8 50%, #fafafa 80%, #fff 100%)",
         position: "relative",
@@ -402,25 +473,9 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
       </div>
 
       {/* ── Tablet ── */}
-      <div
-        style={{
-          marginTop:"clamp(48px, 8vh, 96px)",
-          padding:"0 clamp(12px, 3vw, 40px)",
-          position:"relative",
-          zIndex:5,
-        }}
-      >
+      <div style={{ marginTop:"clamp(48px, 8vh, 96px)", padding:"0 clamp(12px, 3vw, 40px)", position:"relative", zIndex:5 }}>
         <div ref={tabletRef} style={{ maxWidth:1320, margin:"0 auto" }}>
-          {/* Device shell */}
-          <div
-            style={{
-              position:"relative",
-              borderRadius:"2.8rem",
-              background:"#161618",
-              padding:15,
-              boxShadow:"inset 0 0 0 1px rgba(255,255,255,0.07), 0 0 0 1.5px rgba(0,0,0,0.55), 0 48px 110px rgba(0,0,0,0.32), 0 14px 32px rgba(0,0,0,0.20)",
-            }}
-          >
+          <div style={{ position:"relative", borderRadius:"2.8rem", background:"#161618", padding:15, boxShadow:"inset 0 0 0 1px rgba(255,255,255,0.07), 0 0 0 1.5px rgba(0,0,0,0.55), 0 48px 110px rgba(0,0,0,0.32), 0 14px 32px rgba(0,0,0,0.20)" }}>
             {/* Volume left */}
             <div style={{ position:"absolute", left:-5, top:"22%", display:"flex", flexDirection:"column", gap:10 }}>
               {[28,44,44].map((h,i)=>(
@@ -437,26 +492,16 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
               <div style={{ width:7, height:7, background:"rgba(255,255,255,0.09)", borderRadius:"50%" }}/>
             </div>
             {/* Screen */}
-            <div
-              ref={screenRef}
-              style={{
-                borderRadius:"2.05rem",
-                aspectRatio:"16/9",
-                background:"#f5f5f7",
-                position:"relative",
-                overflow:"hidden",
-              }}
-            >
+            <div ref={screenRef} style={{ borderRadius:"2.05rem", aspectRatio:"16/9", background:"#f5f5f7", position:"relative", overflow:"hidden" }}>
               <AppSidebar />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Small spacer so cards have landed before section ends */}
       <div style={{ height:"8vh" }} aria-hidden />
 
-      {/* ── 4 Cards (GSAP-managed) ── */}
+      {/* ── 4 Cards — all animation handled by the rAF loop above ── */}
       {([
         <OverviewCard   key="tl" />,
         <PaymentCard    key="tr" />,
@@ -467,16 +512,12 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
           key={i}
           ref={cardRefs[i]}
           style={{
-            position:"fixed",
-            zIndex:30,
-            background:"white",
-            border:"0.5px solid rgba(0,0,0,0.07)",
-            boxShadow:"0 2px 8px rgba(0,0,0,0.04), 0 10px 30px rgba(0,0,0,0.09)",
-            overflow:"hidden",
-            willChange:"transform, left, top",
-            transformOrigin:"center center",
-            // Always fully visible — no opacity transition
-            opacity:1,
+            position:   "fixed",
+            zIndex:     30,
+            background: "white",
+            border:     "0.5px solid rgba(0,0,0,0.07)",
+            overflow:   "hidden",
+            // All other styles are written live by the loop
           }}
         >
           {content}
