@@ -29,7 +29,7 @@ export function Navbar({ scrolled, activeSection, onNavClick }: NavbarProps) {
               className={`text-sm font-medium transition-colors duration-200 ${
                 activeSection === id
                   ? "text-slate-900"
-                  : "text-slate-500 hover:text-slate-900"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               {label}
@@ -50,7 +50,7 @@ export function Navbar({ scrolled, activeSection, onNavClick }: NavbarProps) {
               className={`text-sm font-medium transition-colors duration-200 ${
                 activeSection === id
                   ? "text-slate-900"
-                  : "text-slate-500 hover:text-slate-900"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               {label}

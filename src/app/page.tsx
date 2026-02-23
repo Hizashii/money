@@ -16,7 +16,7 @@ export default function LandingPage() {
     useScrollTracking(SECTIONS);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden" style={{ background: "var(--background)" }}>
       <Navbar
         scrolled={scrolled}
         activeSection={activeSection}

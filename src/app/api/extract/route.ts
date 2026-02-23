@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractText } from "unpdf";
 import { extractFullInvoiceWithLayers, type InvoiceExtraction } from "@/lib/extract";
+import { extractInvoiceWithAI } from "@/lib/ai-extract";
 import { MAX_FILE_SIZE_BYTES } from "@/lib/constants";
 
 export async function POST(request: NextRequest) {
@@ -34,17 +35,22 @@ export async function POST(request: NextRequest) {
 
     for (const file of files) {
       const buffer = await file.arrayBuffer();
-      let text = "";
+      let extraction: InvoiceExtraction;
 
-      try {
-        const { text: extractedText } = await extractText(buffer);
-        text = Array.isArray(extractedText) ? extractedText.join("\n") : (extractedText || "");
-      } catch (e) {
-        console.error("PDF parse error:", e);
-        text = "";
+      const aiResult = await extractInvoiceWithAI(buffer, file.name);
+      if (aiResult) {
+        extraction = aiResult;
+      } else {
+        let text = "";
+        try {
+          const { text: extractedText } = await extractText(buffer);
+          text = Array.isArray(extractedText) ? extractedText.join("\n") : (extractedText || "");
+        } catch (e) {
+          console.error("PDF parse error:", e);
+        }
+        extraction = extractFullInvoiceWithLayers(text, file.name);
       }
 
-      const extraction = extractFullInvoiceWithLayers(text, file.name);
       extractions.push(extraction);
     }
 

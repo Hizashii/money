@@ -75,7 +75,7 @@ const FEATURES = [
           strokeDasharray={`${2*Math.PI*24*0.87} ${2*Math.PI*24*(1-0.87)}`}
           strokeLinecap="round" transform="rotate(-90 165 54)"/>
         <text x="165" y="51" fontFamily="system-ui" fontSize="11" fill="#0f172a" textAnchor="middle" fontWeight="700">87%</text>
-        <text x="165" y="62" fontFamily="system-ui" fontSize="7" fill="#94a3b8" textAnchor="middle">trust</text>
+        <text x="165" y="62" fontFamily="system-ui" fontSize="7" fill="#64748b" textAnchor="middle">trust</text>
       </svg>
     ),
   },
@@ -142,11 +142,11 @@ const FEATURES = [
         {/* Count badge */}
         <circle cx="170" cy="50" r="22" fill="#ede9fe"/>
         <text x="170" y="47" fontFamily="system-ui" fontSize="16" fill="#7c3aed" textAnchor="middle" fontWeight="700">48</text>
-        <text x="170" y="60" fontFamily="system-ui" fontSize="7.5" fill="#a78bfa" textAnchor="middle">files</text>
+        <text x="170" y="60" fontFamily="system-ui" fontSize="7.5" fill="#6d28d9" textAnchor="middle">files</text>
         {/* Speed lines */}
         <path d="M148 86 L155 86" stroke="#7c3aed" strokeWidth="1.4" strokeLinecap="round"/>
-        <path d="M148 90 L158 90" stroke="#7c3aed" strokeWidth="1.4" strokeLinecap="round" opacity="0.5"/>
-        <path d="M148 94 L153 94" stroke="#7c3aed" strokeWidth="1.4" strokeLinecap="round" opacity="0.3"/>
+        <path d="M148 90 L158 90" stroke="#7c3aed" strokeWidth="1.4" strokeLinecap="round" opacity="0.7"/>
+        <path d="M148 94 L153 94" stroke="#7c3aed" strokeWidth="1.4" strokeLinecap="round" opacity="0.5"/>
       </svg>
     ),
   },
@@ -205,7 +205,7 @@ const FEATURES = [
             <rect x="92" y={y - 9} width={w} height="18" rx="6" fill="white" stroke="#e0f2fe" strokeWidth="1"/>
             <text x={92 + w/2} y={y + 4} fontFamily="system-ui" fontSize="8" fill={color} textAnchor="middle" fontWeight="600">{label}</text>
             {/* Timestamp */}
-            <text x="72" y={y + 4} fontFamily="system-ui" fontSize="7" fill="#94a3b8" textAnchor="end">09:4{Math.floor(y/10)}</text>
+            <text x="72" y={y + 4} fontFamily="system-ui" fontSize="7" fill="#64748b" textAnchor="end">09:4{Math.floor(y/10)}</text>
           </g>
         ))}
       </svg>
@@ -251,21 +251,12 @@ export function ProductSection({ sectionRef }: ProductSectionProps) {
         sectionRef(el);
       }}
       style={{
-        background: "#fafafa",
-        borderTop: "1px solid rgba(0,0,0,0.05)",
+        background: "transparent",
         paddingBottom: 120,
         position: "relative",
         overflow: "hidden",
       }}
     >
-      {/* ── Subtle background texture ── */}
-      <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none",
-        backgroundImage: `radial-gradient(circle at 1px 1px, rgba(0,0,0,0.035) 1px, transparent 0)`,
-        backgroundSize: "28px 28px",
-        maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
-        WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
-      }}/>
 
       {/* ── Header ── */}
       <div ref={headerRef} style={{
@@ -309,7 +300,7 @@ export function ProductSection({ sectionRef }: ProductSectionProps) {
         <p style={{
           fontFamily: "'DM Sans', system-ui, sans-serif",
           fontSize: "clamp(15px, 1.8vw, 18px)",
-          color: "#64748b", lineHeight: 1.75,
+          color: "#475569", lineHeight: 1.75,
           maxWidth: 480, margin: "0 auto",
         }}>
           A focused toolkit for invoice processing — no bloat, no lock-in,
@@ -440,7 +431,7 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(({ feature: f }
 
         <p style={{
           fontFamily: "'DM Sans', system-ui, sans-serif",
-          fontSize: 13.5, color: "#64748b", lineHeight: 1.75, margin: 0,
+          fontSize: 13.5, color: "#475569", lineHeight: 1.75, margin: 0,
         }}>{f.desc}</p>
       </div>
     </div>

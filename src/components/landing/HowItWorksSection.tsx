@@ -54,16 +54,14 @@ export function HowItWorksSection({ sectionRef }: HowItWorksSectionProps) {
         top: 64,
         zIndex: 3,
         marginBottom: 100,
-        background: "#f8fafc",
-        borderRadius: "24px 24px 0 0",
-        boxShadow: "0 -6px 40px rgba(0,0,0,0.08)",
+        background: "transparent",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
       }}
     >
       {/* Handle */}
-      <div style={{ width: 40, height: 4, borderRadius: 99, background: "rgba(0,0,0,0.08)", margin: "14px auto 0", flexShrink: 0 }}/>
+      <div style={{ width: 40, height: 4, borderRadius: 99, background: "rgba(0,0,0,0.12)", margin: "14px auto 0", flexShrink: 0 }}/>
 
       {/* ── Top: steps row ── */}
       <div style={{
@@ -110,17 +108,17 @@ export function HowItWorksSection({ sectionRef }: HowItWorksSectionProps) {
               className="hiw-step"
               style={{
                 padding: "clamp(22px, 2.5vw, 32px) clamp(16px, 2vw, 28px) clamp(22px, 2.5vw, 32px) 0",
-                borderRight: i < STEPS.length - 1 ? "1px solid #f1f5f9" : "none",
+                borderRight: i < STEPS.length - 1 ? "1px solid #e2e8f0" : "none",
                 paddingRight: i < STEPS.length - 1 ? "clamp(16px, 2vw, 28px)" : 0,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                 <span style={{
                   fontFamily: "'DM Serif Display', Georgia, serif",
-                  fontSize: 11, color: "#94a3b8",
+                  fontSize: 11, color: "#64748b",
                   letterSpacing: "0.1em", fontWeight: 700,
                 }}>{s.num}</span>
-                <div style={{ flex: 1, height: 1, background: "#f1f5f9" }}/>
+                <div style={{ flex: 1, height: 1, background: "#e2e8f0" }}/>
               </div>
               <h3 style={{
                 fontFamily: "'DM Serif Display', Georgia, serif",
@@ -130,7 +128,7 @@ export function HowItWorksSection({ sectionRef }: HowItWorksSectionProps) {
               }}>{s.title}</h3>
               <p style={{
                 fontFamily: "'DM Sans', system-ui, sans-serif",
-                fontSize: 13, color: "#64748b",
+                fontSize: 13, color: "#475569",
                 lineHeight: 1.75, margin: 0,
               }}>{s.body}</p>
             </div>
@@ -160,7 +158,7 @@ export function HowItWorksSection({ sectionRef }: HowItWorksSectionProps) {
                   <circle cx="7" cy="7" r="6" fill="rgba(239,68,68,0.12)"/>
                   <path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="#ef4444" strokeWidth="1.4" strokeLinecap="round"/>
                 </svg>
-                <span style={{ fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 13.5, color: "#94a3b8", textDecoration: "line-through", textDecorationColor: "rgba(239,68,68,0.4)" }}>{item}</span>
+                <span style={{ fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 13.5, color: "#64748b", textDecoration: "line-through", textDecorationColor: "rgba(239,68,68,0.5)" }}>{item}</span>
               </div>
             ))}
           </div>

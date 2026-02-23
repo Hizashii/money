@@ -5,7 +5,11 @@ A lightweight dashboard that lets you upload PDF invoices, extracts key fields (
 - **Frontend:** Next.js (App Router) + Tailwind
 - **Backend:** FastAPI (PDF text extraction + simple parsing) + Excel export (openpyxl)
 
-> Note: Current extraction uses PDF text extraction (`pdfplumber`). Scanned/image-only invoices may return empty fields until OCR is added.
+> Note: Extraction tries **AI (Gemini) first** when `GEMINI_API_KEY` is set; otherwise it falls back to regex/text extraction. Scanned/image-only invoices work better with AI.
+
+### Optional: AI extraction (Gemini)
+
+Set `GEMINI_API_KEY` in your environment (e.g. in `.env.local` for Next.js) to use Gemini for invoice extraction. If unset or on errors, the app falls back to regex extraction.
 
 ---
 

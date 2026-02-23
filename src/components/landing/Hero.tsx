@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const ACCENT = "#1d4ed8";
-const LBL = "text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400";
+const LBL = "text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-600";
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 function AppSidebar() {
@@ -61,12 +61,12 @@ function OverviewCard() {
         {["Upload","Extract","Validate","Export"].map((s,i,a)=>(
           <div key={s} style={{ display:"flex", alignItems:"center", flex:i<a.length-1?1:undefined }}>
             <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3 }}>
-              <div style={{ width:20, height:20, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:i<3?ACCENT:"transparent", border:i<3?"none":"1.5px solid #cbd5e1" }}>
-                {i<3?<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>:<span style={{fontSize:8,color:"#94a3b8",fontWeight:500}}>4</span>}
+              <div style={{ width:20, height:20, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:i<3?ACCENT:"transparent", border:i<3?"none":"1.5px solid #94a3b8" }}>
+                {i<3?<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>:<span style={{fontSize:8,color:"#64748b",fontWeight:500}}>4</span>}
               </div>
-              <span style={{ fontSize:8, color:"#94a3b8", whiteSpace:"nowrap" }}>{s}</span>
+              <span style={{ fontSize:8, color:"#64748b", whiteSpace:"nowrap" }}>{s}</span>
             </div>
-            {i<a.length-1&&<div style={{ flex:1, height:1, margin:"0 5px", marginBottom:14, background:i<2?"#bfdbfe":"#e2e8f0" }}/>}
+            {i<a.length-1&&<div style={{ flex:1, height:1, margin:"0 5px", marginBottom:14, background:i<2?"#93c5fd":"#cbd5e1" }}/>}
           </div>
         ))}
       </div>
@@ -77,7 +77,7 @@ function OverviewCard() {
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
               <span style={{ width:6, height:6, borderRadius:"50%", background:r.ok?"#22c55e":"#f59e0b", flexShrink:0, display:"block" }}/>
               <span style={{ fontSize:11, fontWeight:500, color:"#334155" }}>{r.id}</span>
-              <span style={{ fontSize:10, color:"#94a3b8" }}>{r.vendor}</span>
+              <span style={{ fontSize:10, color:"#64748b" }}>{r.vendor}</span>
             </div>
             <span style={{ fontSize:11, fontWeight:600, color:"#475569" }}>{r.amt}</span>
           </div>
@@ -87,7 +87,7 @@ function OverviewCard() {
         {[["142","Processed"],["127","Valid"],["15","Issues"]].map(([v,l])=>(
           <div key={l} style={{ background:"#f8fafc", borderRadius:10, padding:"8px 6px", textAlign:"center" }}>
             <p style={{ fontSize:15, fontWeight:600, color:"#1e293b" }}>{v}</p>
-            <p style={{ fontSize:8, color:"#94a3b8", marginTop:2 }}>{l}</p>
+            <p style={{ fontSize:8, color:"#64748b", marginTop:2 }}>{l}</p>
           </div>
         ))}
       </div>
@@ -106,7 +106,7 @@ function PaymentCard() {
         {bars.map((v,i)=>(
           <div key={i} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
             <div style={{ width:"100%", borderRadius:"3px 3px 0 0", background:i===bars.length-1?ACCENT:"#dbeafe", height:`${(v/max)*100}%`, minHeight:3 }}/>
-            <span style={{ fontSize:7, color:"#94a3b8" }}>{mons[i]}</span>
+            <span style={{ fontSize:7, color:"#64748b" }}>{mons[i]}</span>
           </div>
         ))}
       </div>
@@ -114,7 +114,7 @@ function PaymentCard() {
         {[["30d","Net terms"],["€84k","This quarter"]].map(([v,l])=>(
           <div key={l} style={{ background:"#f8fafc", borderRadius:10, padding:10 }}>
             <p style={{ fontSize:16, fontWeight:600, color:"#1e293b" }}>{v}</p>
-            <p style={{ fontSize:9, color:"#94a3b8", marginTop:2 }}>{l}</p>
+            <p style={{ fontSize:9, color:"#64748b", marginTop:2 }}>{l}</p>
           </div>
         ))}
       </div>
@@ -124,7 +124,7 @@ function PaymentCard() {
             <div style={{ flex:1, height:3, background:"#f1f5f9", borderRadius:99, overflow:"hidden" }}>
               <div style={{ width:`${p}%`, height:"100%", background:ACCENT, borderRadius:99 }}/>
             </div>
-            <span style={{ fontSize:9, color:"#94a3b8", whiteSpace:"nowrap", width:88, textAlign:"right" }}>{l} · {p}%</span>
+            <span style={{ fontSize:9, color:"#64748b", whiteSpace:"nowrap", width:88, textAlign:"right" }}>{l} · {p}%</span>
           </div>
         ))}
       </div>
@@ -155,7 +155,7 @@ function LegitimacyCard() {
         </div>
         <div>
           <p style={{ fontSize:12, fontWeight:600, color:"#334155" }}>High trust score</p>
-          <p style={{ fontSize:10, color:"#94a3b8", marginTop:3 }}>5 checks · 1 warning</p>
+          <p style={{ fontSize:10, color:"#64748b", marginTop:3 }}>5 checks · 1 warning</p>
         </div>
       </div>
       <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
@@ -186,7 +186,7 @@ function StatisticsCard() {
               <p style={{ fontSize:15, fontWeight:600, color:"#1e293b" }}>{v}</p>
               <span style={{ fontSize:9, fontWeight:600, color:"#16a34a" }}>{t}</span>
             </div>
-            <p style={{ fontSize:9, color:"#94a3b8", marginTop:2 }}>{l}</p>
+            <p style={{ fontSize:9, color:"#64748b", marginTop:2 }}>{l}</p>
           </div>
         ))}
       </div>
@@ -420,13 +420,11 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
       ref={sectionRef}
       style={{
         minHeight: "105vh",
-        background: "radial-gradient(ellipse 120% 40% at 50% 0%, #eaebf3 0%, #f4f4f8 50%, #fafafa 80%, #fff 100%)",
+        background: "transparent",
         position: "relative",
         overflow: "hidden",
       }}
     >
-      {/* Ambient glow */}
-      <div style={{ position:"absolute", top:0, left:"50%", transform:"translateX(-50%)", width:"55vw", height:"40vh", pointerEvents:"none", background:"radial-gradient(ellipse at center, rgba(99,102,241,0.08) 0%, transparent 70%)", filter:"blur(52px)" }}/>
 
       {/* ── Hero text ── */}
       <div style={{ display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center", padding:"0 24px", paddingTop:"clamp(80px, 12vh, 140px)" }}>
@@ -454,7 +452,7 @@ export function Hero({ onScrollToHowItWorks }: HeroProps) {
           <motion.p
             variants={fadeUp}
             transition={{ duration:1, ease:[0.16,1,0.3,1] }}
-            style={{ fontFamily:"'DM Sans', system-ui, sans-serif", fontSize:17, color:"#64748b", lineHeight:1.7, maxWidth:400, margin:0 }}
+            style={{ fontFamily:"'DM Sans', system-ui, sans-serif", fontSize:17, color:"#475569", lineHeight:1.7, maxWidth:400, margin:0 }}
           >
             Extract and validate key invoice fields, then approve and export in minutes.
           </motion.p>

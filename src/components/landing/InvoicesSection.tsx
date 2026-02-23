@@ -51,14 +51,12 @@ export function InvoicesSection({ sectionRef }: InvoicesSectionProps) {
         top: 32,
         zIndex: 2,
         marginBottom: 100,
-        background: "white",
-        borderRadius: "24px 24px 0 0",
-        boxShadow: "0 -4px 32px rgba(0,0,0,0.10)",
+        background: "transparent",
         overflow: "hidden",
       }}
     >
       {/* Handle */}
-      <div style={{ width: 40, height: 4, borderRadius: 99, background: "rgba(0,0,0,0.08)", margin: "14px auto 0" }}/>
+      <div style={{ width: 40, height: 4, borderRadius: 99, background: "rgba(0,0,0,0.12)", margin: "14px auto 0" }}/>
 
       <div style={{
         maxWidth: 1120,
@@ -94,7 +92,7 @@ export function InvoicesSection({ sectionRef }: InvoicesSectionProps) {
           <p style={{
             fontFamily: "'DM Sans', system-ui, sans-serif",
             fontSize: "clamp(14px, 1.6vw, 17px)",
-            color: "#64748b", lineHeight: 1.8,
+            color: "#475569", lineHeight: 1.8,
             maxWidth: 340, margin: "0 0 40px",
           }}>
             Digital or scanned, simple or complex — Incheck reads the invoice, not just the format.
@@ -115,7 +113,7 @@ export function InvoicesSection({ sectionRef }: InvoicesSectionProps) {
         </div>
 
         {/* ── Right col: typographic list ── */}
-        <div ref={listRef} style={{ borderTop: "1px solid #f1f5f9" }}>
+        <div ref={listRef} style={{ borderTop: "1px solid #e2e8f0" }}>
           {TYPES.map((t, i) => (
             <div
               key={t.num}
@@ -127,7 +125,7 @@ export function InvoicesSection({ sectionRef }: InvoicesSectionProps) {
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: "clamp(14px, 1.8vw, 22px) 0",
-                borderBottom: "1px solid #f1f5f9",
+                borderBottom: "1px solid #e2e8f0",
                 cursor: "default",
                 transition: "padding-left 0.2s ease",
                 paddingLeft: hovered === i ? 12 : 0,
@@ -144,8 +142,8 @@ export function InvoicesSection({ sectionRef }: InvoicesSectionProps) {
                 }}>{t.label}</span>
                 <span style={{
                   fontFamily: "'DM Sans', system-ui, sans-serif",
-                  fontSize: 12, color: "#94a3b8",
-                  opacity: hovered === i ? 1 : 0.7,
+                  fontSize: 12, color: "#64748b",
+                  opacity: hovered === i ? 1 : 0.95,
                   transition: "opacity 0.18s ease",
                 }}>{t.sub}</span>
               </div>
@@ -153,18 +151,18 @@ export function InvoicesSection({ sectionRef }: InvoicesSectionProps) {
               <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
                 <span style={{
                   fontFamily: "'DM Serif Display', Georgia, serif",
-                  fontSize: 11, color: "#cbd5e1",
-                  letterSpacing: "0.06em",
+                  fontSize: 11, color: "#64748b",
+                  letterSpacing: "0.06em", fontWeight: 700,
                 }}>{t.num}</span>
                 <div style={{
                   width: 28, height: 28, borderRadius: "50%",
-                  border: `1.5px solid ${hovered === i ? "#1d4ed8" : "#e2e8f0"}`,
+                  border: `1.5px solid ${hovered === i ? "#1d4ed8" : "#94a3b8"}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   transition: "border-color 0.18s ease, background 0.18s ease",
                   background: hovered === i ? "#1d4ed8" : "transparent",
                 }}>
                   <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                    <path d="M2.5 5.5h6M6 3l2.5 2.5L6 8" stroke={hovered === i ? "white" : "#cbd5e1"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2.5 5.5h6M6 3l2.5 2.5L6 8" stroke={hovered === i ? "white" : "#64748b"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
               </div>
@@ -174,9 +172,6 @@ export function InvoicesSection({ sectionRef }: InvoicesSectionProps) {
       </div>
 
       {/* 02 / 03 */}
-      <div style={{ position: "absolute", bottom: 22, left: "clamp(24px,4vw,48px)", fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 12, fontWeight: 700, color: "#e2e8f0", letterSpacing: "0.05em", userSelect: "none" as const }}>
-        02 / 03
-      </div>
 
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap');`}</style>
     </section>
