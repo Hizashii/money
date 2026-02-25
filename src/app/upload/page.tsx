@@ -272,15 +272,14 @@ export default function UploadPage() {
   );
 
   return (
-    <div className="flex flex-1 flex-col min-h-0">
-      {/* UPLOAD / PROCESSING STAGES */}
+    <div className="flex flex-1 items-center justify-center">
       {!isResults && (
-        <div className="flex-1 bg-slate-50 p-4 sm:p-6 overflow-auto">
-          <div className="max-w-xl mx-auto">
+        <div className="flex-1 bg-slate-50  overflow-auto">
+          <div className="max-w-150 max-h-400 mx-auto items-center justify-center">
             {stage === "upload" && (
               <div className="animate-fade-in">
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-                  <div className="text-center mb-6">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm items-center justify-center">
+                  <div className="text-center mb-6 ">
                     <div className="mx-auto w-12 h-12 rounded-xl bg-slate-100 grid place-items-center mb-3">
                       <svg className="w-6 h-6 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />

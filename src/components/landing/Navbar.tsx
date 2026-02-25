@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SECTIONS } from "./constants";
+import { Button } from "@mui/material";
 
 interface NavbarProps {
   scrolled: boolean;
@@ -36,12 +37,12 @@ export function Navbar({ scrolled, activeSection, onNavClick }: NavbarProps) {
             </button>
           ))}
         </div>
-        <Link
+        <a
           href="/"
-          className="font-bold text-xl text-slate-900 tracking-tight justify-self-center col-start-2"
+          className="font-bold text-xl text-slate-850 hover:text-gray-600 tracking-tight justify-self-center col-start-2"
         >
           Incheck
-        </Link>
+        </a>
         <div className="hidden md:flex items-center gap-6 justify-end col-start-3">
           {SECTIONS.slice(2).map(({ id, label }) => (
             <button

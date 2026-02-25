@@ -230,12 +230,15 @@ export function ProductSection({ sectionRef }: ProductSectionProps) {
       // Feature rows stagger in
       rowRefs.current.forEach((row, i) => {
         if (!row) return;
-        const fromLeft = i % 2 === 0;
         gsap.fromTo(row,
-          { opacity: 0, x: fromLeft ? -32 : 32, y: 16 },
-          { opacity: 1, x: 0, y: 0, duration: 0.75, ease: "power3.out",
-            delay: (i % 2) * 0.08,
-            scrollTrigger: { trigger: row, start: "top 88%", once: true } }
+          { opacity: 0, x: 0, y: -40 },
+          { opacity: 1,
+      x: 0,
+      y: 0,
+      duration: 0.75,
+      ease: "power3.out",
+      delay: i * 0.06,               // optional stagger
+      scrollTrigger: { trigger: row, start: "top 88%", once: true },}
         );
       });
     }, innerRef);
@@ -347,9 +350,9 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(({ feature: f }
 
   // Merge refs
   const setRef = (el: HTMLDivElement | null) => {
-    (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    (cardRef as React.RefObject<HTMLDivElement | null>).current = el;
     if (typeof ref === "function") ref(el);
-    else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    else if (ref) (ref as React.RefObject<HTMLDivElement | null>).current = el;
   };
 
   return (
@@ -362,7 +365,7 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(({ feature: f }
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget;
-        el.style.transform = "translateY(0)";
+        el.style.transform = "translateY()";
         el.style.boxShadow = `0 1px 4px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.06)`;
       }}
       style={{
@@ -438,22 +441,3 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(({ feature: f }
   );
 });
 FeatureCard.displayName = "FeatureCard";
-
-// ─── Stat bar ─────────────────────────────────────────────────────────────────
-function StatBar() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 90%", once: true } }
-      );
-    });
-    return () => ctx.revert();
-  }, []);
-
-}
